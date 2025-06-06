@@ -30,6 +30,14 @@
         nohup npm run dev &
         '';
         };
+
+        packages.webstorm = pkgs.writeShellApplication {
+        name = "webstorm";
+        runtimeInputs = [ pkgs.nodejs_24 ];
+        text = ''
+          nohup /home/zrock/.local/bin/webstorm . > /dev/null 2>&1 &
+        '';
+        };
       }
     );
 }
