@@ -2,7 +2,7 @@ import * as React from 'react';
 import {useState} from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import {Card, Stack, styled, TextField, Typography} from "@mui/material";
+import {Alert, Card, Divider, Stack, styled, TextField, Typography} from "@mui/material";
 import {createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider} from 'firebase/auth';
 import {auth} from '../firebaseConfig.ts';
 import CssBaseline from "@mui/material/CssBaseline";
@@ -38,6 +38,7 @@ export default function SignUpPage() {
 
     const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [generateStatus, setGenerateStatus] = useState<{ type: 'success' | 'error' | 'warning'; message: string } | null>(null);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -59,13 +60,15 @@ export default function SignUpPage() {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             console.log('User created:', userCredential.user);
+            setGenerateStatus({type: 'success', message: 'Account created successfully.'})
         } catch (error: any) {
             if (error.code === 'auth/email-already-in-use') {
-                setError('This email address is already in use.');
+                setGenerateStatus({type: 'error', message: 'This email address is already in use.'});
             } else {
-                setError('Failed to create an account. Please try again.');
+                setGenerateStatus({type: 'error', message: 'Failed to create an account. Please try again.'});
             }
             console.error(error);
+            setGenerateStatus({type: 'error', message: 'Failed to create an account. Please try again.'});
         } finally {
             setIsSubmitting(false);
         }
@@ -76,9 +79,10 @@ export default function SignUpPage() {
         try {
             const result = await signInWithPopup(auth, provider);
             console.log('Google sign-in success:', result.user);
+            setGenerateStatus({type: 'success', message: 'Account created successfully.'})
         } catch (error) {
-            setError('Failed to sign in with Google.');
             console.error(error);
+            setGenerateStatus({type: 'error', message: 'Failed to create an account. Please try again.'});
         }
     };
 
@@ -87,12 +91,12 @@ export default function SignUpPage() {
         try {
             const result = await signInWithPopup(auth, provider);
             console.log('Facebook sign-in success:', result.user);
+            setGenerateStatus({type: 'success', message: 'Account created successfully.'})
         } catch (error) {
-            setError('Failed to sign in with Facebook.');
             console.error(error);
+            setGenerateStatus({type: 'error', message: 'Failed to create an account. Please try again.'});
         }
     };
-
 
     return (
         <div>
@@ -100,6 +104,12 @@ export default function SignUpPage() {
             <SignUpContainer direction="column" justifyContent="space-between">
                 <Card variant="outlined">
                     <Typography variant="h3">Sign up</Typography>
+
+                    {generateStatus && (
+                        <Alert severity={generateStatus.type} sx={{ mb: 2 }} onClose={() => setGenerateStatus(null)}>
+                            {generateStatus.message}
+                        </Alert>
+                    )}
 
                     {/* Display a single, contextual error message */}
                     {error && (
@@ -154,13 +164,17 @@ export default function SignUpPage() {
                         >
                             {isSubmitting ? 'Signing Up...' : 'Sign Up'}
                         </Button>
+                    </Box>
+                    <Divider>or</Divider>
+
+                    <Stack spacing={1} sx={{width: '100%'}}>
                         <Button fullWidth variant="outlined" onClick={handleGoogleSignIn}>
                             Sign up with Google
                         </Button>
                         <Button fullWidth variant="outlined" onClick={handleFacebookSignIn}>
                             Sign up with Facebook
                         </Button>
-                    </Box>
+                    </Stack>
                 </Card>
             </SignUpContainer>
         </div>
