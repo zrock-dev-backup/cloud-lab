@@ -1,15 +1,31 @@
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getDatabase } from "firebase/database";
+import {initializeApp} from "firebase/app";
+import {getAuth} from "firebase/auth";
+import {getDatabase} from "firebase/database";
+
+const requiredEnvVars = [
+    'VITE_FIREBASE_API_KEY',
+    'VITE_FIREBASE_AUTH_DOMAIN',
+    'VITE_FIREBASE_DATABASE_URL',
+    'VITE_FIREBASE_PROJECT_ID',
+    'VITE_FIREBASE_STORAGE_BUCKET',
+    'VITE_FIREBASE_MESSAGING_SENDER_ID',
+    'VITE_FIREBASE_APP_ID'
+];
+
+for (const varName of requiredEnvVars) {
+    if (!import.meta.env[varName]) {
+        throw new Error(`Configuration error: Missing required environment variable ${varName}. Please check your .env.local file.`);
+    }
+}
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCgflLyZsNGA84mGw7-VzjBwkwTF8nsxXo",
-    authDomain: "cloud-dev-lab.firebaseapp.com",
-    databaseURL: "https://cloud-dev-lab-default-rtdb.firebaseio.com",
-    projectId: "cloud-dev-lab",
-    storageBucket: "cloud-dev-lab.firebasestorage.app",
-    messagingSenderId: "524034662384",
-    appId: "1:524034662384:web:68bc764cae210984450735"
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 const app = initializeApp(firebaseConfig);
