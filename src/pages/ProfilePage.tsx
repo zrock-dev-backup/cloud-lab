@@ -209,6 +209,11 @@ export default function ProfilePage() {
                     )}
 
                     <Divider sx={{my: 4}}/>
+                    <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => navigate('/posts')}>
+                        View Posts
+                    </Button>
+
+                    <Divider sx={{my: 4}}/>
 
                     <Typography variant="h6" sx={{mb: 2, color: 'primary.main'}}>
                         Linked Accounts
