@@ -5,15 +5,17 @@ import Button from '@mui/material/Button';
 import {Alert, Card, Divider, Stack, styled, TextField, Typography} from "@mui/material";
 import {
     createUserWithEmailAndPassword,
-    signInWithPopup,
-    GoogleAuthProvider,
     FacebookAuthProvider,
+    GoogleAuthProvider,
+    signInWithPopup,
     updateProfile
 } from 'firebase/auth';
 import {auth} from '../firebaseConfig.ts';
 import CssBaseline from "@mui/material/CssBaseline";
-import { createUserProfileDocument } from "../services/userService.ts";
+import {createUserProfileDocument} from "../services/userService.ts";
 import {useNavigate} from "react-router-dom";
+import GoogleIcon from "@mui/icons-material/Google";
+import FacebookIcon from "@mui/icons-material/Facebook";
 
 
 const SignUpContainer = styled(Stack)(({theme}) => ({
@@ -49,7 +51,10 @@ export default function SignUpPage() {
 
     const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [generateStatus, setGenerateStatus] = useState<{ type: 'success' | 'error' | 'warning'; message: string } | null>(null);
+    const [generateStatus, setGenerateStatus] = useState<{
+        type: 'success' | 'error' | 'warning';
+        message: string
+    } | null>(null);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -73,9 +78,9 @@ export default function SignUpPage() {
         }
 
         try {
-            const { user } = await createUserWithEmailAndPassword(auth, email, password);
-            await updateProfile(user, { displayName: name });
-            await createUserProfileDocument(user, { name, email, address, birthDate });
+            const {user} = await createUserWithEmailAndPassword(auth, email, password);
+            await updateProfile(user, {displayName: name});
+            await createUserProfileDocument(user, {name, email, address, birthDate});
             setGenerateStatus({type: 'success', message: 'Account created successfully. Redirecting...'});
             setTimeout(() => navigate('/profile'), 2000);
         } catch (error: any) {
@@ -93,7 +98,7 @@ export default function SignUpPage() {
     const handleSocialSignIn = async (provider: GoogleAuthProvider | FacebookAuthProvider) => {
         setIsSubmitting(true);
         try {
-            const { user } = await signInWithPopup(auth, provider);
+            const {user} = await signInWithPopup(auth, provider);
             await createUserProfileDocument(user); // Creates doc if it doesn't exist
             setGenerateStatus({type: 'success', message: 'Signed in successfully. Redirecting...'});
             setTimeout(() => navigate('/profile'), 2000);
@@ -109,36 +114,50 @@ export default function SignUpPage() {
         <div>
             <CssBaseline enableColorScheme/>
             <SignUpContainer direction="column" justifyContent="space-between">
-                <Card variant="outlined" sx={{ p: { xs: 2, sm: 4 }, maxWidth: '500px', margin: 'auto' }}>
+                <Card variant="outlined" sx={{p: {xs: 2, sm: 4}, maxWidth: '500px', margin: 'auto'}}>
                     <Typography variant="h4" component="h1" gutterBottom>
                         Sign up
                     </Typography>
 
                     {generateStatus && (
-                        <Alert severity={generateStatus.type} sx={{ mb: 2 }} onClose={() => setGenerateStatus(null)}>
+                        <Alert severity={generateStatus.type} sx={{mb: 2}} onClose={() => setGenerateStatus(null)}>
                             {generateStatus.message}
                         </Alert>
                     )}
-                    {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+                    {error && <Alert severity="error" sx={{mb: 2}}>{error}</Alert>}
 
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
-                        <TextField margin="normal" required fullWidth id="name" label="Full Name" name="name" autoComplete="name" autoFocus value={name} onChange={(e) => setName(e.target.value)} disabled={isSubmitting}/>
-                        <TextField margin="normal" required fullWidth id="email" label="Email Address" name="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={isSubmitting}/>
-                        <TextField margin="normal" required fullWidth name="password" label="Password" type="password" id="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} disabled={isSubmitting}/>
-                        <TextField margin="normal" fullWidth name="address" label="Address" id="address" autoComplete="street-address" value={address} onChange={(e) => setAddress(e.target.value)} disabled={isSubmitting}/>
-                        <TextField margin="normal" fullWidth name="birthDate" label="Birth Date" type="date" id="birthDate" InputLabelProps={{ shrink: true }} value={birthDate} onChange={(e) => setBirthDate(e.target.value)} disabled={isSubmitting}/>
+                        <TextField margin="normal" required fullWidth id="name" label="Full Name" name="name"
+                                   autoComplete="name" autoFocus value={name} onChange={(e) => setName(e.target.value)}
+                                   disabled={isSubmitting}/>
+                        <TextField margin="normal" required fullWidth id="email" label="Email Address" name="email"
+                                   autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)}
+                                   disabled={isSubmitting}/>
+                        <TextField margin="normal" required fullWidth name="password" label="Password" type="password"
+                                   id="password" autoComplete="new-password" value={password}
+                                   onChange={(e) => setPassword(e.target.value)} disabled={isSubmitting}/>
+                        <TextField margin="normal" fullWidth name="address" label="Address" id="address"
+                                   autoComplete="street-address" value={address}
+                                   onChange={(e) => setAddress(e.target.value)} disabled={isSubmitting}/>
+                        <TextField margin="normal" fullWidth name="birthDate" label="Birth Date" type="date"
+                                   id="birthDate" InputLabelProps={{shrink: true}} value={birthDate}
+                                   onChange={(e) => setBirthDate(e.target.value)} disabled={isSubmitting}/>
 
                         <Button type="submit" fullWidth variant="contained" sx={{mt: 3, mb: 2}} disabled={isSubmitting}>
                             {isSubmitting ? 'Signing Up...' : 'Sign Up'}
                         </Button>
                     </Box>
-                    <Divider sx={{ my: 2 }}>or</Divider>
+                    <Divider sx={{my: 2}}>or</Divider>
 
                     <Stack spacing={1} sx={{width: '100%'}}>
-                        <Button fullWidth variant="outlined" onClick={() => handleSocialSignIn(new GoogleAuthProvider())} disabled={isSubmitting}>
+                        <Button fullWidth variant="outlined"
+                                startIcon={<GoogleIcon/>}
+                                onClick={() => handleSocialSignIn(new GoogleAuthProvider())} disabled={isSubmitting}>
                             Sign up with Google
                         </Button>
-                        <Button fullWidth variant="outlined" onClick={() => handleSocialSignIn(new FacebookAuthProvider())} disabled={isSubmitting}>
+                        <Button fullWidth variant="outlined"
+                                startIcon={<FacebookIcon/>}
+                                onClick={() => handleSocialSignIn(new FacebookAuthProvider())} disabled={isSubmitting}>
                             Sign up with Facebook
                         </Button>
                     </Stack>
