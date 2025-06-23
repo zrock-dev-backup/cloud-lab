@@ -23,11 +23,11 @@
           '';
         };
 
-        packages.dev-script = pkgs.writeShellApplication {
+        packages.default = pkgs.writeShellApplication {
         name = "dev-script";
         runtimeInputs = [ pkgs.nodejs_24 ];
         text = ''
-        nohup npm run dev &
+          nohup alacritty --command npm run dev &
         '';
         };
 
