@@ -26,7 +26,7 @@ function HomePage() {
             marginBottom: 4,
           }}
         >
-          Homework
+          Welcome to Spoty!
         </Typography>
 
         <Stack
@@ -43,6 +43,13 @@ function HomePage() {
           >
             Sign Up
           </Button>
+            <Button
+                variant="contained"
+                onClick={() => {throw new Error("This is your first error!");}}
+                size="large"
+            >
+                Error button
+            </Button>
           <Button
             variant="contained"
             onClick={() => navigate("/sign-in")}
