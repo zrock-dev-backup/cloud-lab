@@ -9,15 +9,13 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
-import { FacebookAuthProvider, GoogleAuthProvider } from "firebase/auth";
+import { GoogleAuthProvider } from "firebase/auth";
 import CssBaseline from "@mui/material/CssBaseline";
 import GoogleIcon from "@mui/icons-material/Google";
-import FacebookIcon from "@mui/icons-material/Facebook";
 import { SignUpContainer } from "./SignUpPage.styles.ts";
-import { useSignUp } from "../hooks/useSignUp.ts"; // ADDED: Import the new hook
+import { useSignUp } from "../hooks/useSignUp.ts";
 
 export default function SignUpPage() {
-  // All logic is now handled by the hook
   const {
     name,
     setName,
@@ -130,15 +128,6 @@ export default function SignUpPage() {
               disabled={isSubmitting}
             >
               Sign up with Google
-            </Button>
-            <Button
-              fullWidth
-              variant="outlined"
-              startIcon={<FacebookIcon />}
-              onClick={() => handleSocialSignIn(new FacebookAuthProvider())}
-              disabled={isSubmitting}
-            >
-              Sign up with Facebook
             </Button>
           </Stack>
         </Card>
